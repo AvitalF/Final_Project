@@ -1,8 +1,136 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Management Application</title>
+    <!-- Bootstrap Production CSS Link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .chart-container { display: flex; justify-content: center; align-items: center; min-height: 250px; }
+        /* Dynamic styling for custom graphical presentation */
+        .bar-wrapper { display: flex; align-items: flex-end; height: 200px; gap: 15px; padding-top: 20px; }
+        .bar-column { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .bar-fill { width: 100%; background-color: #0d6efd; border-radius: 4px 4px 0 0; transition: height 0.5s ease; }
+        .pie-fallback { width: 200px; height: 200px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; font-weight: bold; }
+    </style>
 </head>
 <body>
+
+<!-- Top Navigation Bar Header Container -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">💸 Developer Team Cost Manager (USD)</span>
     </div>
+</nav>
+
+<div class="container my-4">
+    <div class="row">
+
+        <!-- Left Column: Add New Cost Entry Form Panel -->
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h4 class="mb-3 text-primary">Add New Cost Item</h4>
+                <form id="costForm">
+                    <div class="mb-3">
+                        <label class="form-label">Sum (USD)</label>
+                        <input type="number" id="costSum" class="form-control" placeholder="Enter amount" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select id="costCategory" class="form-select" required>
+                            <option value="Food">Food</option>
+                            <option value="Education">Education</option>
+                            <option value="Car">Car</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Utilities">Utilities</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea id="costDescription" class="form-control" rows="2" placeholder="Item description details..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Cost Entry</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column: Interactive Report & Charts Panels -->
+        <div class="col-md-8">
+            <div class="card p-4 mb-4">
+                <h4 class="mb-3 text-secondary">Filter Reports & Visualizations</h4>
+                <div class="row g-3 align-items-center">
+                    <div class="col-sm-4">
+                        <label class="form-label">Select Year</label>
+                        <select id="filterYear" class="form-select"></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label">Select Month</label>
+                        <select id="filterMonth" class="form-select">
+                            <option value="1">January</option><option value="2">February</option>
+                            <option value="3">March</option><option value="4">April</option>
+                            <option value="5">May</option><option value="6">June</option>
+                            <option value="7">July</option><option value="8">August</option>
+                            <option value="9">September</option><option value="10">October</option>
+                            <option value="11">November</option><option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 d-flex align-items-end h-100">
+                        <button id="btnGenerate" class="btn btn-success w-100 mt-4">Generate Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Report Generated Table Output View -->
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="m-0">Monthly Statement Overview</h5>
+                    <span class="badge bg-dark fs-6" id="txtTotalSum">Total: $0.00</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Day</th><th>Category</th><th>Description</th><th class="text-end">Sum</th>
+                        </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                        <tr><td colspan="4" class="text-center text-muted">No entries found for the selected timeline criteria.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Graphic Data Presentation Charts Section Row -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card p-3">
+                        <h6 class="text-center border-bottom pb-2">3. Pie Chart (Category Breakdown)</h6>
+                        <div class="chart-container">
+                            <div id="pieChartElement" class="pie-fallback">No Data Available</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-3">
+                        <h6 class="text-center border-bottom pb-2">4. Bar Chart (Scale Comparison)</h6>
+                        <div class="chart-container">
+                            <div id="barChartElement" class="bar-wrapper w-100">
+                                <div class="text-center w-100 text-muted">No Data Available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
+
+<!-- Loading Required Internal Script Modules Sequentially -->
+<script src="db.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
